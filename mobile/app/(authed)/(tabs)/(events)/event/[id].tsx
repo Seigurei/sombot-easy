@@ -1,144 +1,174 @@
-import { Button } from "@/components/Button";
-import DateTimePicker from "@/components/DateTimePicker";
-import { Input } from "@/components/Input";
-import { Text } from "@/components/Text";
-import { VStack } from "@/components/VStack";
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { eventservice } from "@/services/events";
-import { Event } from "@/types/event";
-import { useFocusEffect } from "@react-navigation/native";
-import { useLocalSearchParams, useNavigation, router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { Alert } from "react-native";
+import React from "react";
+import {
+  Image,
+  StyleSheet,
+  View,
+  Text,
+  Dimensions,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { Button } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+
+const { width, height } = Dimensions.get("window");
 
 export default function EventDetailsScreen() {
-  const navigation = useNavigation();
-  const { id } = useLocalSearchParams();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [eventData, setEventData] = useState<Event | null>(null);
-
-  function updateField(field: keyof Event, value: string | Date) {
-    setEventData((prev) => ({
-      ...prev!,
-      [field]: value,
-    }));
-  }
-
-  const onDelete = useCallback(async () => {
-    if (!eventData) return;
-    try {
-      Alert.alert(
-        "Delete Event",
-        "Are you sure you want to delete this event?",
-        [
-          { text: "Cancel" },
-          {
-            text: "Delete",
-            onPress: async () => {
-              await eventservice.deleteOne(Number(id));
-              router.back();
-            },
-          },
-        ]
-      );
-    } catch (error) {
-      Alert.alert("Error", "Failed to delete event");
-    }
-  }, [eventData, id]);
-
-  async function onSubmitChanges() {
-    if (!eventData) return;
-    try {
-      setIsSubmitting(true);
-      await eventservice.updateOne(
-        Number(id),
-        eventData.name,
-        eventData.location,
-        eventData.date
-      );
-      router.back();
-    } catch (error) {
-      Alert.alert("Error", "Failed to update event");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
-  const fetchEvent = async () => {
-    try {
-      const response = await eventservice.getOne(Number(id));
-      setEventData(response.data);
-    } catch (error) {
-      router.back();
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchEvent();
-    }, [])
-  );
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: "",
-      headerRight: () => headerRight(onDelete),
-    });
-  }, [navigation, onDelete]);
+  const router = useRouter();
 
   return (
-    <VStack m={20} flex={1} gap={30}>
-      <VStack gap={5}>
-        <Text ml={10} fontSize={14} color="gray">
-          Name
-        </Text>
-        <Input
-          value={eventData?.name}
-          onChangeText={(value) => updateField("name", value)}
-          placeholder="Name"
-          placeholderTextColor="darkgray"
-          h={48}
-          p={14}
-        />
-      </VStack>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F6F8FB" }}>
+      <View style={{ flex: 1 }}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
 
-      <VStack gap={5}>
-        <Text ml={10} fontSize={14} color="gray">
-          Location
-        </Text>
-        <Input
-          value={eventData?.location}
-          onChangeText={(value) => updateField("location", value)}
-          placeholder="Name"
-          placeholderTextColor="darkgray"
-          h={48}
-          p={14}
-        />
-      </VStack>
+          <Image
+            source={{
+              uri: "https://th.bing.com/th/id/OIP.SEw2ky0v-k9Hb8ssNj1U2QHaEw?rs=1&pid=ImgDetMain",
+            }}
+            style={styles.headerImage}
+            resizeMode="cover"
+          />
+        </View>
 
-      <VStack gap={5}>
-        <Text ml={10} fontSize={14} color="gray">
-          Date
-        </Text>
-        <DateTimePicker
-          onChange={(date) => updateField("date", date || new Date())}
-          currentDate={new Date(eventData?.date || new Date())}
-        />
-      </VStack>
-
-      <Button
-        mt={"auto"}
-        isLoading={isSubmitting}
-        disabled={isSubmitting}
-        onPress={onSubmitChanges}
-      >
-        Save Changes
-      </Button>
-    </VStack>
+        <ScrollView style={{ flex: 1 }}>
+          <View style={styles.contentContainer}>
+            <Text style={styles.eventTitle}>Popular Event</Text>
+            <Text style={styles.eventDate}>Date: 30 . 12 . 20012</Text>
+            <Text style={styles.eventPlace}>Place:</Text>
+            <View style={styles.separator} />
+            <Text style={styles.sectionTitle}>Description</Text>
+            <Text style={styles.sectionContent}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </Text>
+            <Text style={styles.sectionTitle}>Information</Text>
+            <Text style={styles.sectionContent}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </Text>
+            <Text style={styles.sectionTitle}>Ticket</Text>
+            <View style={styles.ticketContainer}>
+              <Button
+                mode="contained"
+                style={[styles.ticketButton, styles.regularButton]}
+                onPress={() => router.push("/(events)/event/ticket/vip")}
+              >
+                Regular $30
+              </Button>
+              <Button
+                mode="contained"
+                style={[styles.ticketButton, styles.vipButton]}
+                onPress={() => router.push("/(events)/event/ticket/vip")}
+              >
+                VIP $45
+              </Button>
+              <Button
+                mode="contained"
+                style={[styles.ticketButton, styles.tableButton]}
+                onPress={() => router.push("/(events)/event/ticket/vip")}
+              >
+                Table $55
+              </Button>
+              <Button
+                mode="contained"
+                style={[styles.ticketButton, styles.platinumButton]}
+                onPress={() => router.push("/(events)/event/ticket/vip")}
+              >
+                Platinum $100
+              </Button>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 
-const headerRight = (onPress: VoidFunction) => {
-  return <TabBarIcon size={30} name="trash" onPress={onPress} />;
-};
+const styles = StyleSheet.create({
+  headerContainer: {
+    height: (30 / 100) * height,
+    width: "100%",
+    position: "relative",
+  },
+  headerImage: {
+    width: "100%",
+    height: "100%",
+  },
+  backButton: {
+    position: "absolute",
+    top: 16,
+    left: 16,
+    zIndex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: 20,
+    padding: 8,
+  },
+  contentContainer: {
+    flex: 1,
+    backgroundColor: "#F6F8FB",
+    padding: 16,
+  },
+  eventTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#000",
+    marginBottom: 8,
+  },
+  eventDate: {
+    fontSize: 16,
+    color: "#555",
+    marginBottom: 4,
+  },
+  eventPlace: {
+    fontSize: 16,
+    color: "#555",
+    marginBottom: 12,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#ddd",
+    marginVertical: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000",
+    marginBottom: 8,
+  },
+  sectionContent: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 16,
+  },
+  ticketContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  ticketButton: {
+    borderRadius: 8,
+    marginBottom: 8,
+    width: "48%",
+    paddingVertical: 8,
+  },
+  regularButton: {
+    backgroundColor: "#FF6F61",
+  },
+  vipButton: {
+    backgroundColor: "#4CAF50",
+  },
+  tableButton: {
+    backgroundColor: "#FFC107",
+  },
+  platinumButton: {
+    backgroundColor: "#3F51B5",
+  },
+});

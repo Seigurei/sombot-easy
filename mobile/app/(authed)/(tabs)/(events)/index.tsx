@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Text } from "@/components/Text";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Carousel from "@/components/Carousel";
 import { useAuth } from "@/context/AuthContext";
-import { UserRole } from "@/types/user";
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import EventList from "@/components/EventList";
+import { Appbar, Avatar, Badge } from "react-native-paper";
 
 const mockEvents = [
   {
@@ -45,9 +46,7 @@ export default function EventsScreen() {
   const [events, setEvents] = useState(mockEvents);
 
   function onGoToEventPage(id: number) {
-    if (user?.role === UserRole.Manager) {
-      router.push(`/(events)/event/${id}`);
-    }
+    router.push(`/(events)/event/${id}`);
   }
 
   const fetchEvents = async () => {
@@ -65,14 +64,32 @@ export default function EventsScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchEvents();
-    }, [])
+    }, []),
   );
 
   return (
     <SafeAreaView style={styles.container}>
+      <Appbar.Header style={styles.header}>
+        <Avatar.Image
+          size={48}
+          source={{
+            uri: "https://th.bing.com/th/id/OIP.SEw2ky0v-k9Hb8ssNj1U2QHaEw?rs=1&pid=ImgDetMain",
+          }}
+        />
+        <View style={styles.avatarTextContainer}>
+          <Text style={styles.greetingText}>Hello</Text>
+          <Text style={styles.usernameText}>
+            {user?.name ?? "Naruto Uzumaki"}
+          </Text>
+        </View>
+        <View style={styles.notificationContainer}>
+          <Avatar.Icon size={40} icon="bell" style={styles.notificationIcon} />
+          <Badge size={10} style={styles.notificationBadge} />
+        </View>
+      </Appbar.Header>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Carousel />
-        <View style={{ height: 16 }} />
+        <View style={styles.spacer} />
         <EventList
           title="Popular Events"
           events={events}
@@ -91,8 +108,47 @@ export default function EventsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+  header: {
+    backgroundColor: "#326EE4",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    height: 50,
+  },
+  avatarTextContainer: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  greetingText: {
+    fontSize: 14,
+    color: "#ffffff",
+  },
+  usernameText: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#ffffff",
+  },
+  notificationContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  notificationIcon: {
+    backgroundColor: "#ffffff",
+  },
+  notificationBadge: {
+    position: "absolute",
+    top: -4,
+    right: 0,
+    backgroundColor: "red",
+    zIndex: 1,
   },
   scrollContainer: {
     padding: 16,
+  },
+  spacer: {
+    height: 16,
   },
 });
