@@ -1,10 +1,19 @@
-import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
-import { ShortcutProps, defaultShortcuts } from '@/styles/shortcuts';
+import React from "react";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
+import { defaultShortcuts } from "@/styles/shortcuts";
 
-interface ButtonProps extends ShortcutProps, TouchableOpacityProps {
-  variant?: 'contained' | 'outlined' | 'ghost';
+interface ButtonProps {
+  variant?: "contained" | "outlined" | "ghost";
   isLoading?: boolean;
+  backgroundColor?: string;
+  onPress: () => void;
+  children: React.ReactNode;
+  style?: object;
 }
 
 export const Button = ({
@@ -12,37 +21,40 @@ export const Button = ({
   children,
   variant = "contained",
   isLoading,
+  backgroundColor,
+  style,
   ...restProps
-}: ButtonProps) => {
-  return (
-    <TouchableOpacity
-      disabled={isLoading}
-      onPress={onPress}
-      style={[
-        defaultShortcuts(restProps),
-        styles[variant].button,
-        isLoading && disabled.button
-      ]}
-      {...restProps}
-    >
-      {isLoading ?
-        <ActivityIndicator animating={isLoading} size={22} /> :
-        <Text style={styles[variant].text}>{children}</Text>
-      }
-    </TouchableOpacity>
-  );
-};
+}: ButtonProps) => (
+  <TouchableOpacity
+    disabled={isLoading}
+    onPress={onPress}
+    style={[
+      defaultShortcuts(restProps),
+      styles[variant].button,
+      isLoading && disabled.button,
+      backgroundColor && { backgroundColor },
+      style,
+    ]}
+    {...restProps}
+  >
+    {isLoading ? (
+      <ActivityIndicator animating={isLoading} size={22} />
+    ) : (
+      <Text style={styles[variant].text}>{children}</Text>
+    )}
+  </TouchableOpacity>
+);
 
 const styles = {
   contained: StyleSheet.create({
     button: {
       padding: 14,
       borderRadius: 50,
-      backgroundColor: 'black',
+      backgroundColor: "black",
     },
     text: {
-      textAlign: 'center',
-      color: 'white',
+      textAlign: "center",
+      color: "white",
       fontSize: 18,
     },
   }),
@@ -50,12 +62,12 @@ const styles = {
     button: {
       padding: 14,
       borderRadius: 50,
-      borderColor: 'darkgray',
+      borderColor: "darkgray",
       borderWidth: 1,
     },
     text: {
-      textAlign: 'center',
-      color: 'black',
+      textAlign: "center",
+      color: "black",
       fontSize: 18,
     },
   }),
@@ -63,11 +75,11 @@ const styles = {
     button: {
       padding: 14,
       borderRadius: 50,
-      backgroundColor: 'transparent',
+      backgroundColor: "transparent",
     },
     text: {
-      textAlign: 'center',
-      color: 'black',
+      textAlign: "center",
+      color: "black",
       fontSize: 18,
     },
   }),
