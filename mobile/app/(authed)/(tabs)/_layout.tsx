@@ -16,6 +16,14 @@ export default function TabLayout() {
       },
     },
     {
+      name: "my-booking",
+      displayName: "My Booking",
+      icon: "calendar",
+      options: {
+        headerShown: true,
+      },
+    },
+    {
       name: "settings",
       displayName: "Settings",
       icon: "cog",

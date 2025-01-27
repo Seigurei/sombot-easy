@@ -28,7 +28,7 @@ export default function EventDetailsScreen() {
         const response = await eventservice.getOne(id);
         setEventDetails(response.data);
       } catch (error) {
-        Alert.alert("Error", "Failed to fetch event details");
+        console.log({ error });
       }
     };
 

@@ -37,7 +37,7 @@ export default function Login() {
         >
           <HStack gap={10}>
             <Text fontSize={30} bold mb={20}>
-              Ticket Booking
+              SombotEasy
             </Text>
             <TabBarIcon name="ticket" size={50} />
           </HStack>
