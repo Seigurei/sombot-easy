@@ -9,18 +9,27 @@ const Carousel = () => {
   const carouselData = [
     {
       id: 1,
-      image:
-        "https://th.bing.com/th/id/OIP.SEw2ky0v-k9Hb8ssNj1U2QHaEw?rs=1&pid=ImgDetMain",
+      image: "https://i.ytimg.com/vi/cbP9rRtfwZw/maxresdefault.jpg",
     },
     {
       id: 2,
       image:
-        "https://th.bing.com/th/id/OIP.hvLnolQxX2o5u9pvO_hjHwHaFi?rs=1&pid=ImgDetMain",
+        "https://angkorpass-production.s3.ap-southeast-1.amazonaws.com/attachments/VDMW406G-1701407912.png",
     },
     {
       id: 3,
       image:
-        "https://th.bing.com/th/id/R.b9f817c9f2438a49a1e8146283ea93bf?rik=BVUOGaU935kBbA&pid=ImgRaw&r=0",
+        "https://cdn.oneesports.gg/cdn-data/2021/11/MLBB_M3WorldChampionship_HowToGetTickets.jpg",
+    },
+    {
+      id: 4,
+      image:
+        "https://www.khmertimeskh.com/wp-content/uploads/2018/05/Anchor-Beach-1st-International-Beach-Volleyball_Pre-PR-750x393.jpg",
+    },
+    {
+      id: 5,
+      image:
+        "https://www.khmertimeskh.com/wp-content/uploads/2018/12/TSFF-2019-001-708x440.jpg",
     },
   ];
 
@@ -65,7 +74,7 @@ const Carousel = () => {
         ref={flatlistRef}
         getItemLayout={getItemLayout}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         horizontal
         pagingEnabled
         onScroll={handleScroll}

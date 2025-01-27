@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text } from "@/components/Text";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View, TouchableOpacity } from "react-native";
 import Carousel from "@/components/Carousel";
 import { useAuth } from "@/context/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
@@ -45,7 +44,7 @@ export default function EventsScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [events, setEvents] = useState(mockEvents);
 
-  function onGoToEventPage(id: number) {
+  function onGoToEventPage(id) {
     router.push(`/(events)/event/${id}`);
   }
 
@@ -64,26 +63,28 @@ export default function EventsScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchEvents();
-    }, []),
+    }, [])
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <Appbar.Header style={styles.header}>
         <Avatar.Image
-          size={48}
+          size={40}
           source={{
-            uri: "https://th.bing.com/th/id/OIP.SEw2ky0v-k9Hb8ssNj1U2QHaEw?rs=1&pid=ImgDetMain",
+            uri: "https://th.bing.com/th/id/R.e705a39be39b16ff77009f75f0655edb?rik=z%2fMdWKV%2frAxACg&pid=ImgRaw&r=0",
           }}
+          style={{ backgroundColor: "white" }}
         />
-        <View style={styles.avatarTextContainer}>
-          <Text style={styles.greetingText}>Hello</Text>
-          <Text style={styles.usernameText}>
-            {user?.name ?? "Naruto Uzumaki"}
-          </Text>
-        </View>
+        <Appbar.Content title="SombotEasy" titleStyle={styles.headerTitle} />
         <View style={styles.notificationContainer}>
-          <Avatar.Icon size={40} icon="bell" style={styles.notificationIcon} />
+          <TouchableOpacity onPress={() => router.push("/notifications")}>
+            <Avatar.Icon
+              size={40}
+              icon="bell"
+              style={styles.notificationIcon}
+            />
+          </TouchableOpacity>
           <Badge size={10} style={styles.notificationBadge} />
         </View>
       </Appbar.Header>
@@ -111,25 +112,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   header: {
-    backgroundColor: "#326EE4",
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#326EE4",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
     paddingHorizontal: 16,
-    paddingVertical: 8,
-    height: 50,
+    paddingVertical: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
-  avatarTextContainer: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  greetingText: {
-    fontSize: 14,
+  headerTitle: {
     color: "#ffffff",
-  },
-  usernameText: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#ffffff",
+    fontSize: 22,
+    fontWeight: "bold",
   },
   notificationContainer: {
     justifyContent: "center",
