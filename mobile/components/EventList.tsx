@@ -16,61 +16,73 @@ const EventList = ({ title, events, onEventPress }: any) => {
       <FlatList
         data={events}
         horizontal={true}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => onEventPress(item.id)}
-            style={styles.eventCard}
-          >
-            <View>
-              <Image
-                source={{ uri: item.src }}
-                style={styles.image}
-                resizeMode="cover"
-              />
-              <View style={styles.overlayIcons}>
-                <View style={styles.dateIcon}>
-                  <Text style={styles.dateText}>{item.date.split("-")[2]}</Text>
-                  <Text style={styles.monthText}>
-                    {item.date.split("-")[1]}
-                  </Text>
-                </View>
-                <View style={styles.saveIcon}>
-                  <FontAwesome name="bookmark" size={20} color="#F1573D" />
+        renderItem={({ item }) => {
+          const parsedDate = new Date(item.date);
+          const day = parsedDate.getDate();
+          const month = parsedDate.toLocaleString("default", {
+            month: "short",
+          });
+
+          return (
+            <TouchableOpacity
+              onPress={() => onEventPress(item.id)}
+              style={styles.eventCard}
+            >
+              <View>
+                <Image
+                  source={{ uri: item.url }}
+                  style={styles.image}
+                  resizeMode="cover"
+                />
+                <View style={styles.overlayIcons}>
+                  <View style={styles.dateIcon}>
+                    <Text style={styles.dateText}>{day}</Text>
+                    <Text style={styles.monthText}>{month.toUpperCase()}</Text>
+                  </View>
+                  <View style={styles.saveIcon}>
+                    <FontAwesome name="bookmark" size={20} color="#F1573D" />
+                  </View>
                 </View>
               </View>
-            </View>
-            <View style={styles.content}>
-              <Text style={styles.eventTitle}>{item.title}</Text>
-              <View style={styles.attendees}>
-                <View style={styles.avatarGroup}>
-                  <Image
-                    style={styles.avatar}
-                    source={{
-                      uri: "https://th.bing.com/th/id/R.b9f817c9f2438a49a1e8146283ea93bf?rik=BVUOGaU935kBbA&pid=ImgRaw&r=0",
-                    }}
-                  />
-                  <Image
-                    style={[styles.avatar, styles.avatarOverlap]}
-                    source={{
-                      uri: "https://th.bing.com/th/id/OIP.SEw2ky0v-k9Hb8ssNj1U2QHaEw?rs=1&pid=ImgDetMain",
-                    }}
-                  />
-                  <Image
-                    style={[styles.avatar, styles.avatarOverlap]}
-                    source={{
-                      uri: "https://th.bing.com/th/id/R.b9f817c9f2438a49a1e8146283ea93bf?rik=BVUOGaU935kBbA&pid=ImgRaw&r=0",
-                    }}
-                  />
+              <View style={styles.content}>
+                <Text
+                  style={styles.eventTitle}
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
+                  {item.name}
+                </Text>
+                <View style={styles.attendees}>
+                  <View style={styles.avatarGroup}>
+                    <Image
+                      style={styles.avatar}
+                      source={{
+                        uri: "https://th.bing.com/th/id/R.b9f817c9f2438a49a1e8146283ea93bf?rik=BVUOGaU935kBbA&pid=ImgRaw&r=0",
+                      }}
+                    />
+                    <Image
+                      style={[styles.avatar, styles.avatarOverlap]}
+                      source={{
+                        uri: "https://th.bing.com/th/id/OIP.SEw2ky0v-k9Hb8ssNj1U2QHaEw?rs=1&pid=ImgDetMain",
+                      }}
+                    />
+                    <Image
+                      style={[styles.avatar, styles.avatarOverlap]}
+                      source={{
+                        uri: "https://th.bing.com/th/id/R.b9f817c9f2438a49a1e8146283ea93bf?rik=BVUOGaU935kBbA&pid=ImgRaw&r=0",
+                      }}
+                    />
+                  </View>
+                  <Text style={styles.goingText}>+200 Going</Text>
                 </View>
-                <Text style={styles.goingText}>+200 Going</Text>
+                <View style={styles.location}>
+                  <FontAwesome name="map-marker" size={16} color="#716E90" />
+                  <Text style={styles.eventDate}>{item.location}</Text>
+                </View>
               </View>
-              <View style={styles.location}>
-                <FontAwesome name="map-marker" size={16} color="#716E90" />
-                <Text style={styles.eventDate}>{item.date}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
+            </TouchableOpacity>
+          );
+        }}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
       />
@@ -93,7 +105,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 10,
     width: 237,
-    height: 275,
+    height: 300,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -148,7 +160,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   eventTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "500",
     color: "#171766",
   },
