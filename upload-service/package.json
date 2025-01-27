@@ -1,0 +1,17 @@
+{
+  "name": "upload-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --env-file=.env index.js"
+  },
+  "keywords": [],
+  "author": "SEANGLAY - seanglay.sq@outlook.com",
+  "type": "module",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.0.1",
+    "multer": "^1.4.5-lts.1"
+  }
+}
