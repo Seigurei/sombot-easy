@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -7,16 +7,37 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter, useGlobalSearchParams } from "expo-router";
+import { eventservice } from "@/services/events";
 
 const { width, height } = Dimensions.get("window");
 
 export default function EventDetailsScreen() {
   const router = useRouter();
+  const { id } = useGlobalSearchParams();
+  const [eventDetails, setEventDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        const response = await eventservice.getOne(id);
+        setEventDetails(response.data);
+      } catch (error) {
+        Alert.alert("Error", "Failed to fetch event details");
+      }
+    };
+
+    if (id) fetchEventDetails();
+  }, [id]);
+
+  if (!eventDetails) {
+    return null;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F6F8FB" }}>
@@ -31,7 +52,7 @@ export default function EventDetailsScreen() {
 
           <Image
             source={{
-              uri: "https://th.bing.com/th/id/OIP.SEw2ky0v-k9Hb8ssNj1U2QHaEw?rs=1&pid=ImgDetMain",
+              uri: eventDetails.url,
             }}
             style={styles.headerImage}
             resizeMode="cover"
@@ -40,26 +61,22 @@ export default function EventDetailsScreen() {
 
         <ScrollView style={{ flex: 1 }}>
           <View style={styles.contentContainer}>
-            <Text style={styles.eventTitle}>Popular Event</Text>
-            <Text style={styles.eventDate}>Date: 30 . 12 . 20012</Text>
-            <Text style={styles.eventPlace}>Place:</Text>
+            <Text style={styles.eventTitle}>{eventDetails.name}</Text>
+            <Text style={styles.eventDate}>Date: {eventDetails.date}</Text>
+            <Text style={styles.eventPlace}>
+              Place: {eventDetails.location}
+            </Text>
             <View style={styles.separator} />
             <Text style={styles.sectionTitle}>Description</Text>
             <Text style={styles.sectionContent}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </Text>
-            <Text style={styles.sectionTitle}>Information</Text>
-            <Text style={styles.sectionContent}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              {eventDetails.description}
             </Text>
             <Text style={styles.sectionTitle}>Ticket</Text>
             <View style={styles.ticketContainer}>
               <Button
                 mode="contained"
                 style={[styles.ticketButton, styles.regularButton]}
-                onPress={() => router.push("/(events)/event/ticket/vip")}
+                onPress={() => router.push("/(events)/event/ticket/regular")}
               >
                 Regular $30
               </Button>
@@ -73,14 +90,14 @@ export default function EventDetailsScreen() {
               <Button
                 mode="contained"
                 style={[styles.ticketButton, styles.tableButton]}
-                onPress={() => router.push("/(events)/event/ticket/vip")}
+                onPress={() => router.push("/(events)/event/ticket/table")}
               >
                 Table $55
               </Button>
               <Button
                 mode="contained"
                 style={[styles.ticketButton, styles.platinumButton]}
-                onPress={() => router.push("/(events)/event/ticket/vip")}
+                onPress={() => router.push("/(events)/event/ticket/platinum")}
               >
                 Platinum $100
               </Button>
