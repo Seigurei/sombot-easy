@@ -12,11 +12,12 @@ type Event struct {
 	Name                  string    `json:"name"`
 	Location              string    `json:"location"`
 	Image                 []byte    `json:"image" gorm:"type:bytea"`
-	TotalTicketsPurchased int64     `json:"totalTicketsPurchased" gorm:"-"`
-	TotalTicketsEntered   int64     `json:"totalTicketsEntered" gorm:"-"`
+	TotalTicketsPurchased int64     `json:"totalTicketsPurchased" gorm:"column:total_tickets_purchased"`
+	TotalTicketsEntered   int64     `json:"totalTicketsEntered" gorm:"column:total_tickets_entered"`
 	Date                  time.Time `json:"date"`
 	CreatedAt             time.Time `json:"createdAt"`
 	UpdatedAt             time.Time `json:"updatedAt"`
+	Tickets               []Ticket  `json:"tickets" gorm:"foreignKey:EventID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type EventRepository interface {
@@ -25,6 +26,8 @@ type EventRepository interface {
 	CreateOne(ctx context.Context, event *Event) (*Event, error)
 	UpdateOne(ctx context.Context, eventId uint, updateData map[string]interface{}) (*Event, error)
 	DeleteOne(ctx context.Context, eventId uint) error
+	GetPopularEvents(ctx context.Context) ([]*Event, error)
+	GetUpcomingEvents(ctx context.Context) ([]*Event, error)
 }
 
 func (e *Event) AfterFind(db *gorm.DB) (err error) {

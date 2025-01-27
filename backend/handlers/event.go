@@ -157,6 +157,42 @@ func (h *EventHandler) DeleteOne(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusNoContent)
 }
 
+func (h *EventHandler) GetPopularEvents(ctx *fiber.Ctx) error {
+	context, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	events, err := h.repository.GetPopularEvents(context)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "fail",
+			"message": err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"status": "success",
+		"data":   events,
+	})
+}
+
+func (h *EventHandler) GetUpcomingEvents(ctx *fiber.Ctx) error {
+	context, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	events, err := h.repository.GetUpcomingEvents(context)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "fail",
+			"message": err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"status": "success",
+		"data":   events,
+	})
+}
+
 func NewEventHandler(router fiber.Router, repository models.EventRepository) {
 	handler := &EventHandler{
 		repository: repository,
@@ -167,4 +203,6 @@ func NewEventHandler(router fiber.Router, repository models.EventRepository) {
 	router.Get("/:eventId", handler.GetOne)
 	router.Put("/:eventId", handler.UpdateOne)
 	router.Delete("/:eventId", handler.DeleteOne)
+	router.Get("/popular", handler.GetPopularEvents)
+	router.Get("/upcoming", handler.GetUpcomingEvents)
 }

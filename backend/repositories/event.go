@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"time"
 
 	"github.com/RealBinaryGuru/sombot-easy/models"
 	"gorm.io/gorm"
@@ -33,6 +34,38 @@ func (r *EventRepository) GetOne(ctx context.Context, eventId uint) (*models.Eve
 	}
 
 	return event, nil
+}
+
+func (r *EventRepository) GetPopularEvents(ctx context.Context) ([]*models.Event, error) {
+	events := []*models.Event{}
+
+	res := r.db.Model(&models.Event{}).
+		Where("total_tickets_purchased > ?", 0).
+		Order("total_tickets_purchased DESC").
+		Limit(10).
+		Find(&events)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return events, nil
+}
+
+func (r *EventRepository) GetUpcomingEvents(ctx context.Context) ([]*models.Event, error) {
+	events := []*models.Event{}
+
+	res := r.db.Model(&models.Event{}).
+		Where("date > ?", time.Now()).
+		Order("date ASC").
+		Limit(10).
+		Find(&events)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return events, nil
 }
 
 func (r *EventRepository) CreateOne(ctx context.Context, event *models.Event) (*models.Event, error) {
