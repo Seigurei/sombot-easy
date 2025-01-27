@@ -1,53 +1,18 @@
-# Config file for [Air](https://github.com/cosmtrek/air) in TOML format
-
 # Working directory
 root = "."
 tmp_dir = "tmp"
 
 [build]
-# Command to build the application
-cmd = "tsc && node ./dist/index.js" # Assuming TypeScript compilation and Node.js execution
-# Output binary is not relevant for a Node.js app, so no `bin` or `full_bin` needed
-# Watch these filename extensions for changes
-include_ext = ["ts", "js", "json", "env"]
-# Ignore these directories
-exclude_dir = ["node_modules", "tmp", "dist", ".git"]
-# Exclude unchanged files
-exclude_unchanged = true
-# This log file is placed in your tmp_dir
-log = "air.log"
-# Delay rebuild when frequent file changes occur
-delay = 1000 # ms
-# Stop running process on build errors
-stop_on_error = true
-# Rerun binary after build errors are resolved
-rerun = true
-# Delay after each rerun
-rerun_delay = 1000 # ms
+cmd = "go build -o ./tmp/main ./cmd/api"
+bin = "./tmp/main"
+include_ext = ["go"]
+exclude_dir = ["tmp", "vendor", ".git"]
 
 [log]
-# Show timestamp on logs
 time = true
-# Display logs only from the main app
-main_only = false
-
-[color]
-# Custom colors for output sections
-main = "magenta"
-watcher = "cyan"
-build = "yellow"
-runner = "green"
 
 [misc]
-# Delete tmp directory on exit
 clean_on_exit = true
 
 [screen]
-# Clear terminal on every rebuild
 clear_on_rebuild = true
-# Retain scrollback history
-keep_scroll = true
-
-[proxy]
-# Enable live-reloading on browser
-enabled = false
