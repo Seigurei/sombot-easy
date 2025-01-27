@@ -1,0 +1,18 @@
+{
+  "name": "promotion-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --env-file=.env index.js"
+  },
+  "keywords": [],
+  "author": "SEANGLAY - seanglay.sq@outlook.com",
+  "type": "module",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.0.1",
+    "form-data": "^4.0.1",
+    "got": "^14.4.5"
+  }
+}
