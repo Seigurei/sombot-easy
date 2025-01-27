@@ -11,6 +11,7 @@ type Event struct {
 	ID                    uint      `json:"id" gorm:"primarykey"`
 	Name                  string    `json:"name"`
 	Location              string    `json:"location"`
+	Image                 []byte    `json:"image" gorm:"type:bytea"`
 	TotalTicketsPurchased int64     `json:"totalTicketsPurchased" gorm:"-"`
 	TotalTicketsEntered   int64     `json:"totalTicketsEntered" gorm:"-"`
 	Date                  time.Time `json:"date"`

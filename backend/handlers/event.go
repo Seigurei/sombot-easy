@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/RealBinaryGuru/sombot-easy/models"
+	"github.com/gofiber/fiber/v2"
 )
 
 type EventHandler struct {
@@ -58,19 +58,40 @@ func (h *EventHandler) GetOne(ctx *fiber.Ctx) error {
 func (h *EventHandler) CreateOne(ctx *fiber.Ctx) error {
 	event := &models.Event{}
 
-	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
-	defer cancel()
-
 	if err := ctx.BodyParser(event); err != nil {
 		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(&fiber.Map{
 			"status":  "fail",
-			"message": err.Error(),
+			"message": "Invalid request data",
 			"data":    nil,
 		})
 	}
 
-	event, err := h.repository.CreateOne(context, event)
+	file, err := ctx.FormFile("image")
+	if err == nil {
+		fileContent, err := file.Open()
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+				"status":  "fail",
+				"message": "Unable to read image file",
+			})
+		}
+		defer fileContent.Close()
 
+		imageData := make([]byte, file.Size)
+		if _, err := fileContent.Read(imageData); err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+				"status":  "fail",
+				"message": "Error reading image data",
+			})
+		}
+
+		event.Image = imageData
+	}
+
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
+	defer cancel()
+
+	event, err = h.repository.CreateOne(context, event)
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"status":  "fail",
